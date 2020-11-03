@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View"/>
+        <import type="com.mizardar.shaaditest.Util"/>
+        <variable
+            name="user"
+            type="com.mizardar.shaaditest.model.network.Result" />
+
+        <variable
+            name="clickListener"
+            type="com.mizardar.shaaditest.view.listener.ClickListener" />
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:cardBackgroundColor="@android:color/white"
+        app:cardCornerRadius="8dp"
+        app:cardUseCompatPadding="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:srcCompat="@drawable/image_placeholder"
+                userImage="@{user.picture.large}"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/txtName"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/txtName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Mithilesh Izardar"
+                android:textSize="24sp"
+                android:text="@{user.name.first +` `+ user.name.last}"
+                android:layout_marginStart="8dp"
+                android:textColor="@android:color/black"
+                android:layout_marginBottom="4dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/dob"
+                />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/dob"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="4dp"
+                app:layout_constraintBottom_toTopOf="@id/location"
+                app:layout_constraintStart_toStartOf="parent"
+                android:text="@{@string/txt_date_of_birth(Util.getDOB(user.dob.date))}"
+                tools:text="DOB : 19 Sep 2020" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/age"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text=", 19 Years"
+                android:text="@{@string/txt_age(user.dob.age)}"
+                android:layout_marginBottom="4dp"
+                app:layout_constraintStart_toEndOf="@id/dob"
+                app:layout_constraintBottom_toTopOf="@id/location"
+                />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Peterborough, United Kingdom"
+                android:text="@{user.location.city +`, ` +user.location.country}"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/requestDeclined"
+                />
+
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/requestDeclined"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Your request is declined"
+                android:textSize="24sp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/action_call"
+                android:visibility="@{user.declined? View.VISIBLE : View.GONE}"
+                android:textColor="#F4511E"/>
+
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/action_mail"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:padding="12dp"
+                android:background="?selectableItemBackgroundBorderless"
+                app:layout_constraintStart_toStartOf="parent"
+                android:visibility="@{user.accepted ? View.VISIBLE : View.GONE}"
+                app:layout_constraintEnd_toStartOf="@id/action_call"
+                app:layout_constraintBottom_toTopOf="@id/action_decline"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:srcCompat="@drawable/ic_email"
+                android:onClick="@{() -> clickListener.onMail(user)}"
+                />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/action_call"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:padding="12dp"
+                android:background="?selectableItemBackgroundBorderless"
+                app:srcCompat="@drawable/ic_call"
+                android:visibility="@{user.accepted ? View.VISIBLE : View.GONE}"
+                app:layout_constraintStart_toEndOf="@id/action_mail"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/action_decline"
+                android:onClick="@{() -> clickListener.onCall(user)}"
+                />
+
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/action_decline"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:padding="12dp"
+                android:visibility="@{!user.declined &amp;&amp; !user.accepted ? View.VISIBLE : View.GONE}"
+                android:background="?selectableItemBackgroundBorderless"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/action_accept"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:srcCompat="@drawable/ic_decline"
+                android:tint="#F4511E"
+                android:onClick="@{() -> clickListener.onDeclineClick(user)}"
+                />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/action_accept"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:padding="12dp"
+                android:tint="#43A047"
+                android:onClick="@{() -> clickListener.onAcceptClick(user)}"
+                android:visibility="@{!user.declined &amp;&amp; !user.accepted ? View.VISIBLE : View.GONE}"
+                android:background="?selectableItemBackgroundBorderless"
+                app:srcCompat="@drawable/ic_accept"
+                app:layout_constraintStart_toEndOf="@id/action_decline"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
+
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+</layout>
